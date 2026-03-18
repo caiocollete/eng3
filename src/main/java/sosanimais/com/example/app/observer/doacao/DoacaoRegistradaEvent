@@ -1,0 +1,11 @@
+public class DoacaoRegistradaEvent {
+    private final Doacao doacao;
+
+    public DoacaoRegistradaEvent(Doacao doacao) {
+        this.doacao = doacao;
+    }
+
+    public Doacao getDoacao() {
+        return doacao;
+    }
+}

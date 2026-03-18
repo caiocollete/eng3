@@ -1,0 +1,19 @@
+public class DoacaoEventPublisher {
+    private final List<DoacaoObserver> notificacoes = new ArrayList<>();
+
+    public void adicionarObservador(DoacaoObserver observer) {
+        notificacoes.add(observer);
+    }
+
+    public void removerObservador(DoacaoObserver observer) {
+        notificacoes.remove(observer);
+    }
+
+    public void notificarDoacaoRegistrada(Doacao doacao) {
+        DoacaoRegistradaEvent event = new DoacaoRegistradaEvent(doacao);
+        for (DoacaoObserver observer : notificacoes) {
+            observer.onDoacaoRegistrada(event);
+        }
+    }
+
+}

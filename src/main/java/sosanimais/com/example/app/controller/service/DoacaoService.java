@@ -1,6 +1,7 @@
 package sosanimais.com.example.app.controller.service;
 
 import org.springframework.stereotype.Service;
+import sosanimais.com.example.app.controller.service.strategy.Doacao.DoacaoStrategy;
 import sosanimais.com.example.app.model.DAL.DoacaoDAL;
 import sosanimais.com.example.app.model.entity.Doacao;
 
@@ -11,6 +12,7 @@ import java.util.List;
 public class DoacaoService {
 
     private final DoacaoDAL doacaoDAL;
+    private DoacaoStrategy doacaoStrategy;
 
     public DoacaoService() {
         // Se DoacaoDAL for um @Repository gerenciado pelo Spring,

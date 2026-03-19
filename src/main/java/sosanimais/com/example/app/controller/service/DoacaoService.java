@@ -2,6 +2,7 @@ package sosanimais.com.example.app.controller.service;
 
 import org.springframework.stereotype.Service;
 import sosanimais.com.example.app.controller.service.strategy.Doacao.DoacaoStrategy;
+import sosanimais.com.example.app.controller.service.strategy.Doacao.DoacaoValidator;
 import sosanimais.com.example.app.model.DAL.DoacaoDAL;
 import sosanimais.com.example.app.model.entity.Doacao;
 
@@ -31,16 +32,8 @@ public class DoacaoService {
             return null;
         }
 
-        if ("dinheiro".equalsIgnoreCase(doacao.getTipo()) && (doacao.getValor() == null || doacao.getValor() <= 0)) {
-            System.err.println("Valor inválido para doação em dinheiro.");
-            return null;
-        }
+        DoacaoValidator.validate(doacao);
 
-        if (("remedios".equalsIgnoreCase(doacao.getTipo()) || "comida".equalsIgnoreCase(doacao.getTipo()) || "produtos".equalsIgnoreCase(doacao.getTipo())) &&
-                (doacao.getProduto() == null || doacao.getProduto().getNome() == null || doacao.getProduto().getNome().trim().isEmpty())) {
-            System.err.println("Nome do produto obrigatório para este tipo de doação.");
-            return null;
-        }
         return doacaoDAL.save(doacao);
     }
 

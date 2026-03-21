@@ -1,10 +1,10 @@
 package sosanimais.com.example.app.controller.service;
 
 import org.springframework.stereotype.Service;
-import sosanimais.com.example.app.controller.service.strategy.Doacao.DoacaoStrategy;
 import sosanimais.com.example.app.controller.service.strategy.Doacao.DoacaoValidator;
 import sosanimais.com.example.app.model.DAL.DoacaoDAL;
 import sosanimais.com.example.app.model.entity.Doacao;
+import sosanimais.com.example.app.observer.doacao.DoacaoEventPublisher;
 
 import java.util.Collections; // Import para lista vazia segura
 import java.util.List;
@@ -13,14 +13,16 @@ import java.util.List;
 public class DoacaoService {
 
     private final DoacaoDAL doacaoDAL;
-    private DoacaoStrategy doacaoStrategy;
+    
+    private final DoacaoEventPublisher doacaoEventPublisher;
 
-    public DoacaoService() {
+    public DoacaoService(DoacaoEventPublisher doacaoEventPublisher) {
         // Se DoacaoDAL for um @Repository gerenciado pelo Spring,
         // o ideal seria injetá-lo via construtor com @Autowired.
         // Ex: @Autowired public DoacaoService(DoacaoDAL doacaoDAL) { this.doacaoDAL = doacaoDAL; }
         // Por enquanto, mantendo a instanciação direta que você tinha.
         this.doacaoDAL = new DoacaoDAL();
+        this.doacaoEventPublisher = doacaoEventPublisher;
     }
 
     public Doacao registrarDoacao(Doacao doacao) {
@@ -34,7 +36,12 @@ public class DoacaoService {
 
         DoacaoValidator.validate(doacao);
 
-        return doacaoDAL.save(doacao);
+        Doacao doacaoSalva = doacaoDAL.save(doacao);
+        if (doacaoSalva != null && doacaoSalva.getId() != null) {
+            doacaoEventPublisher.publicar(doacaoSalva);
+        }
+
+        return doacaoSalva;
     }
 
     // NOVO MÉTODO: Listar todas as doações

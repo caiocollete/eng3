@@ -1,7 +1,0 @@
-public class DoacaoObserver{
-    public void onDoacaoRegistrada(DoacaoRegistradaEvent event) {
-        // Lógica para lidar com a doação registrada
-        Doacao doacao = event.getDoacao();
-        System.out.println("Nova doação registrada: " + doacao.getValor() + " por " + doacao.getDoador());
-    }
-}

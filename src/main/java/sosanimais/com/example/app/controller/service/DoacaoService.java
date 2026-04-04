@@ -1,23 +1,28 @@
 package sosanimais.com.example.app.controller.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sosanimais.com.example.app.model.DAL.DoacaoDAL;
 import sosanimais.com.example.app.model.entity.Doacao;
+import sosanimais.com.example.app.observer.doacao.DoacaoEventPublisher;
 
-import java.util.Collections; // Import para lista vazia segura
+import java.util.Collections;//Import para lista vazia segura
 import java.util.List;
 
 @Service
 public class DoacaoService {
 
     private final DoacaoDAL doacaoDAL;
+    private final DoacaoEventPublisher eventPublisher;
 
-    public DoacaoService() {
+    @Autowired
+    public DoacaoService(DoacaoDAL doacaoDAL, DoacaoEventPublisher eventPublisher) {
         // Se DoacaoDAL for um @Repository gerenciado pelo Spring,
         // o ideal seria injetá-lo via construtor com @Autowired.
         // Ex: @Autowired public DoacaoService(DoacaoDAL doacaoDAL) { this.doacaoDAL = doacaoDAL; }
         // Por enquanto, mantendo a instanciação direta que você tinha.
-        this.doacaoDAL = new DoacaoDAL();
+        this.doacaoDAL = doacaoDAL;
+        this.eventPublisher = eventPublisher;
     }
 
     public Doacao registrarDoacao(Doacao doacao) {
@@ -39,7 +44,12 @@ public class DoacaoService {
             System.err.println("Nome do produto obrigatório para este tipo de doação.");
             return null;
         }
-        return doacaoDAL.save(doacao);
+        Doacao doacaoSalva = doacaoDAL.save(doacao);
+        //Nova verificação para registrar a doação no Obs
+        if (doacaoSalva != null && doacaoSalva.getId() != null) {
+            eventPublisher.notificarDoacaoRegistrada(doacaoSalva);
+        }
+        return doacaoSalva;
     }
 
     // NOVO MÉTODO: Listar todas as doações

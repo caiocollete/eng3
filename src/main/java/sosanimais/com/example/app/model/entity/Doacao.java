@@ -3,21 +3,21 @@ package sosanimais.com.example.app.model.entity;
 import sosanimais.com.example.app.model.ProdutoInformacao; // Usando sua classe existente
 import java.time.LocalDate;
 
-public class Doacao {
-    private Long id; // Gerado pelo banco de dados
+public class Doacao{
+    private Long id; //Gerado pelo banco de dados
     private String nomeDoador;
     private String email;
-    private String tipo; // "dinheiro", "remedios", "comida", "produtos"
+    private String tipo; //"dinheiro", "remedios", "comida", "produtos"
     private String mensagem;
     private LocalDate dataDoacao;
-    private Double valor; // Aplicável se tipo for "dinheiro"
-    private ProdutoInformacao produto; // Detalhes do produto, se aplicável
+    private Double valor; //Aplicável se tipo for "dinheiro"
+    private ProdutoInformacao produto; //Detalhes do produto, se aplicável
 
-    // Construtor vazio (necessário para o Jackson - conversor JSON)
+    //Construtor vazio (necessário para o Jackson - conversor JSON)
     public Doacao() {
     }
 
-    // Construtor completo (pode ser útil)
+    //Construtor completo (pode ser útil)
     public Doacao(String nomeDoador, String email, String tipo, String mensagem, LocalDate dataDoacao, Double valor, ProdutoInformacao produto) {
         this.nomeDoador = nomeDoador;
         this.email = email;
@@ -28,7 +28,7 @@ public class Doacao {
         this.produto = produto;
     }
 
-    // Getters e Setters
+    //Getters e Setters
 
     public Long getId() {
         return id;

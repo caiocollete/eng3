@@ -13,16 +13,6 @@ public class LogDoacaoObserver implements DoacaoObserver {
         this.subject = subject;
     }
 
-    @PostConstruct
-    public void registerObserver() {
-        subject.registerObserver(this);
-    }
-
-    @PreDestroy
-    public void removeObserver() {
-        subject.removeObserver(this);
-    }
-
     @Override
     public void update() {
         DoacaoRegistradaEvent event = subject.getUltimaDoacaoRegistrada();

@@ -1,14 +1,38 @@
 package sosanimais.com.example.app.observer.doacao;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Component;
 import sosanimais.com.example.app.model.entity.Doacao;
 
 @Component
 public class LogDoacaoObserver implements DoacaoObserver {
+    private final DoacaoSubject subject;
+
+    public LogDoacaoObserver(DoacaoSubject subject) {
+        this.subject = subject;
+    }
+
+    @PostConstruct
+    public void registerObserver() {
+        subject.registerObserver(this);
+    }
+
+    @PreDestroy
+    public void removeObserver() {
+        subject.removeObserver(this);
+    }
+
     @Override
-    public void onDoacaoRegistrada(Doacao doacao) {
+    public void update() {
+        DoacaoRegistradaEvent event = subject.getUltimaDoacaoRegistrada();
+        if (event == null) {
+            return;
+        }
+
+        Doacao doacao = event.getDoacao();
         System.out.println(
-                "Doacao registrada com sucesso. id=" + doacao.getId() +
+                "Doação registrada com sucesso. id=" + doacao.getId() +
                         ", doador=" + doacao.getNomeDoador() +
                         ", tipo=" + doacao.getTipo() +
                         ", data=" + doacao.getDataDoacao()

@@ -1,7 +1,5 @@
 package sosanimais.com.example.app.observer.doacao;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,37 +1,47 @@
 package sosanimais.com.example.app.observer.doacao;
 
 import org.springframework.stereotype.Component;
-import sosanimais.com.example.app.model.entity.Doacao;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
-public class DoacaoEventPublisher {
-    private final CopyOnWriteArrayList<DoacaoObserver> observers;
+public class DoacaoEventPublisher implements DoacaoSubject {
+    private final List<DoacaoObserver> observers = new ArrayList<>();
+    private volatile DoacaoRegistradaEvent ultimaDoacaoRegistrada;
 
-    public DoacaoEventPublisher(List<DoacaoObserver> observers) {
-        this.observers = new CopyOnWriteArrayList<>(observers);
-    }
-
-    public void registrar(DoacaoObserver observer) {
+    @Override
+    public void registerObserver(DoacaoObserver observer) {
         if (observer != null && !observers.contains(observer)) {
             observers.add(observer);
         }
     }
 
-    public void remover(DoacaoObserver observer) {
+    @Override
+    public void removeObserver(DoacaoObserver observer) {
         observers.remove(observer);
     }
 
-    public void publicar(Doacao doacao) {
+    @Override
+    public void notifyObservers() {
         for (DoacaoObserver observer : observers) {
             try {
-                observer.onDoacaoRegistrada(doacao);
+                observer.update();
             } catch (RuntimeException e) {
-                System.err.println("Erro ao notificar observer de doacao: " + e.getMessage());
+                System.err.println("Erro ao notificar observer de doação: " + e.getMessage());
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void setUltimaDoacaoRegistrada(DoacaoRegistradaEvent event) {
+        this.ultimaDoacaoRegistrada = event;
+        notifyObservers();
+    }
+
+    @Override
+    public DoacaoRegistradaEvent getUltimaDoacaoRegistrada() {
+        return ultimaDoacaoRegistrada;
     }
 }
